@@ -30,8 +30,6 @@ CREATE TABLE sub (
     sub_day INT,
     sub_time INT,
     credit INT NOT NULL,
-    task_id INT,
-    score_id INT,
     note TEXT,
     link TEXT,
     target_score INT,
@@ -53,6 +51,7 @@ CREATE TABLE score (
     score_name VARCHAR(255) NOT NULL,
     score_value INT NOT NULL,
     score_rate INT NOT NULL
+    FOREIGN KEY(sub_id) REFERENCES sub(id_sub)
 );
 CREATE TABLE task (
     id_task INT PRIMARY KEY,
@@ -62,6 +61,7 @@ CREATE TABLE task (
     task_finish INT NOT NULL,
     task_repeat INT,
     task_done INT NOT NULL,
+    FOREIGN KEY(sub_id) REFERENCES sub(id_sub)      
 );
 )
 
