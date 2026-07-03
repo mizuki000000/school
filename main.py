@@ -6,29 +6,66 @@
 gpaページ(全体の目標と個々の成績表示)
 ノート、リンク集ページ
 設定ページ
-#json、sql
-#データ構造
-#学期名json→学期名→期間、科目名→タスク、成績、ノート、リンク集
-
-辞書0
-    期間_id
-        最初の日、最後の日、除く日(GWなど)
-
-辞書1
-    成績_id
-        重み、得点、取るべき点
-
-辞書2
-    タスク_id
-        タイトル、内容、締め日、実行日、メモ、実行したかの状態管理、繰り返し判定
-
-辞書3
-    科目_id(キー)
-        タスク[IDをリストで保存]、期間、成績、外部リンク、ノートリンク、曜日時限(複数の可能性あり、オンデマンドの場合自分でやると決めた日と元の時限をどちらも時間割に表示する)単位数
-#Python
-import json
+#python
+import sqlite3
 import time
 import os
+#データベースに接続
+con = sqlite3.connect('data.db')
+cursor = con.cursor()
+#sqlを実行
+cursor.execute(
+
+CREATE TABLE team (
+    id_team INT PRIMARY KEY,
+    team_name VARCHAR(255) NOT NULL,
+    team_start INT NOT NULL,
+    team_finish INT NOT NULL,
+    team_remove INT
+);
+
+CREATE TABLE sub (
+    id_sub INT PRIMARY KEY,
+    sub_name VARCHAR(255) NOT NULL,
+    sub_day INT,
+    sub_time INT,
+    credit INT NOT NULL,
+    task_id INT,
+    score_id INT,
+    note TEXT,
+    link TEXT,
+    target_score INT,
+    FOREIGN KEY (task_id) REFERENCES task(id_task),
+    FOREIGN KEY (score_id) REFERENCES score(id_score)
+);
+
+CREATE TABLE enroll (
+    id_e INT PRIMARY KEY,
+    team_name VARCHAR(255) NOT NULL,
+    team_id INT NOT NULL,
+    sub_id INT NOT NULL,
+    target_gpa INT NOT NULL,
+    FOREIGN KEY (team_id) REFERENCES team(id_team),
+    FOREIGN KEY (sub_id) REFERENCES sub(id_sub)
+);
+CREATE TABLE score (
+    id_score INT PRIMARY KEY,
+    score_name VARCHAR(255) NOT NULL,
+    score_value INT NOT NULL,
+    score_rate INT NOT NULL
+);
+CREATE TABLE task (
+    id_task INT PRIMARY KEY,
+    task_name VARCHAR(255) NOT NULL,
+    task_desc TEXT,
+    task_start INT NOT NULL,
+    task_finish INT NOT NULL,
+    task_repeat INT,
+    task_done INT NOT NULL,
+);
+)
+
+
 #関数リスト
 
 #汎用関数
