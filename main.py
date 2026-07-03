@@ -16,12 +16,12 @@ cursor = con.cursor()
 #sqlを実行
 cursor.execute(
 
-CREATE TABLE team (
-    id_team INT PRIMARY KEY,
-    team_name VARCHAR(255) NOT NULL,
-    team_start INT NOT NULL,
-    team_finish INT NOT NULL,
-    team_remove INT
+CREATE TABLE term (
+    id_term INT PRIMARY KEY,
+    term_name VARCHAR(255) NOT NULL,
+    term_start INT NOT NULL,
+    term_finish INT NOT NULL,
+    term_remove INT
 );
 
 CREATE TABLE sub (
@@ -41,11 +41,11 @@ CREATE TABLE sub (
 
 CREATE TABLE enroll (
     id_e INT PRIMARY KEY,
-    team_name VARCHAR(255) NOT NULL,
-    team_id INT NOT NULL,
+    term_name VARCHAR(255) NOT NULL,
+    term_id INT NOT NULL,
     sub_id INT NOT NULL,
     target_gpa INT NOT NULL,
-    FOREIGN KEY (team_id) REFERENCES team(id_team),
+    FOREIGN KEY (term_id) REFERENCES term(id_term),
     FOREIGN KEY (sub_id) REFERENCES sub(id_sub)
 );
 CREATE TABLE score (
@@ -69,12 +69,23 @@ CREATE TABLE task (
 #関数リスト
 
 #汎用関数
-関数_辞書編集する
-    同じキーがなければエラー
-関数_辞書削除する
-    同じキーがなければエラー
-関数_json読む
-関数_json書く
+def add_data(key, value):
+    cursor.execute(f"INSERT INTO term ({key}) VALUES (?)", (value,))
+    con.commit()
+
+def edit_data(key, value):
+    cursor.execute(f"UPDATE term SET {key} = ? WHERE id_term = (SELECT id_term FROM term ORDER BY id_term DESC LIMIT 1)", (value,))
+    con.commit()
+
+def delete_data(key, value):
+    cursor.execute(f"DELETE FROM term WHERE {key} = ?", (value,))
+    con.commit()
+
+def read_json():
+    pass
+
+def write_json():
+    pass
 関数_辞書show
 特定の辞書を出力
 
